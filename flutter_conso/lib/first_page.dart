@@ -12,15 +12,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<dynamic> data = []; // Stocker les données de l'API
+  late List<dynamic> data = []; //Stocker les données de l'API
+  Set<String> displayedCommunes = Set<String>();
 
   @override
   void initState() {
     super.initState();
-    fetchDataFromEnedisAPI(); // Appeler la fonction pour récupérer les données lors de l'initialisation
+    fetchDataFromAPI(); //Récupérez les données de l'API
   }
 
-  Future<void> fetchDataFromEnedisAPI() async {
+  Future<void> fetchDataFromAPI() async {
     final url = Uri.parse(
       'https://enedis.opendatasoft.com/api/v2/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records',
     );
@@ -34,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
         data = jsonData['records'];
       });
     } else {
-      // Gérez les erreurs en cas d'échec de la requête.
+      // Gère les erreurs en cas d'échec de la requête.
       print('Erreur lors de la récupération des données : ${response.statusCode}');
     }
   }
@@ -48,10 +49,17 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(data[index]['record']['fields']['nom_commune']),
-            subtitle: Text('Consommation : ${data[index]['record']['fields']['consommation_annuelle_moyenne_de_la_commune_mwh']} MWh'),
-          );
+           final commune = data[index]['record']['fields']['nom_commune'];
+          if (!displayedCommunes.contains(commune)) {
+            displayedCommunes.add(commune); // Ajoutez la commune aux communes déjà affichées.
+            return ListTile(
+              title: Text(commune),
+              subtitle: Text('Consommation : ${data[index]['record']['fields']['consommation_annuelle_moyenne_de_la_commune_mwh']} MWh'),
+            );
+          } else {
+            // Si la commune a déjà été affichée, retournez un conteneur vide.
+            return Container();
+          }
         },
       ),
     );

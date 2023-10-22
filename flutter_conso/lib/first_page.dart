@@ -28,14 +28,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final response = await http.get(url);
 
+    //test de récupération des données
     if (response.statusCode == 200) {
-      // La requête a réussi. Analysez les données JSON.
       final jsonData = json.decode(response.body);
       setState(() {
         data = jsonData['records'];
       });
     } else {
-      // Gère les erreurs en cas d'échec de la requête.
       print('Erreur lors de la récupération des données : ${response.statusCode}');
     }
   }
@@ -51,13 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
         itemBuilder: (context, index) {
            final commune = data[index]['record']['fields']['nom_commune'];
           if (!displayedCommunes.contains(commune)) {
-            displayedCommunes.add(commune); // Ajoutez la commune aux communes déjà affichées.
+            displayedCommunes.add(commune);
             return ListTile(
               title: Text(commune),
               subtitle: Text('Consommation : ${data[index]['record']['fields']['consommation_annuelle_moyenne_de_la_commune_mwh']} MWh'),
             );
           } else {
-            // Si la commune a déjà été affichée, retournez un conteneur vide.
             return Container();
           }
         },

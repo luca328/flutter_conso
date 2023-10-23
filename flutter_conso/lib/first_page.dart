@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_conso/helpers/departement.dart';
+import 'dart:developer' as developer;
 
 
 class MyHomePage extends StatefulWidget {
@@ -18,29 +19,31 @@ class _MyHomePageState extends State<MyHomePage> {
   Set<String> displayedCommunes = Set<String>();
   final TextEditingController departementController = TextEditingController();
   TextLabel? selectedDepartement;
+  String? selectedDepartementCode;
 
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI(); //Récupérez les données de l'API
+    fetchDataFromAPI(TextLabel.ain.code); //Récupérez les données de l'API
   }
 
-  Future<void> fetchDataFromAPI() async {
+  Future<void> fetchDataFromAPI(code) async {
     final url = Uri.parse(
-      "https://enedis.opendatasoft.com/api/v2/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records",
+      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?where=code_departement%20like%20\'$code\''
     );
 
-    final response = await http.get(url);
+    //final response = await http.get(url);
+    developer.log('url : $url');
 
     //test de récupération des données
-    if (response.statusCode == 200) {
+    /*if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       setState(() {
         data = jsonData['records'];
       });
     } else {
       print('Erreur lors de la récupération des données : ${response.statusCode}');
-    }
+    }*/
   }
 
   @override
@@ -67,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
               setState(() {
                 selectedDepartement = label;
               });
+              fetchDataFromAPI(selectedDepartement?.code);
             },
           ),
           Text('vous avez sélectionné : ${selectedDepartement?.label??TextLabel.ain.label}'),

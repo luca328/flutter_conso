@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Text('vous avez sélectionné : ${selectedDepartement?.label??TextLabel.ain.label}'),
           SizedBox(
-            height: 200,
+            height: 300,
             child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {

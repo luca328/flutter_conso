@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_conso/helpers/departement.dart';
 import 'dart:developer' as developer;
+import 'package:dio/dio.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -15,35 +16,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<dynamic> data = []; //Stocker les données de l'API
-  Set<String> displayedCommunes = Set<String>();
+  late List<dynamic> data = <dynamic>[]; //Stocker les données de l'API
+  Set<String> displayedCommunes = <String>{};
   final TextEditingController departementController = TextEditingController();
-  TextLabel? selectedDepartement;
-  String? selectedDepartementCode;
+  late TextLabel? selectedDepartement;
 
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI(TextLabel.ain.code); //Récupérez les données de l'API
+    selectedDepartement = TextLabel.ain;
+    fetchDataFromAPI(); //Récupérez les données de l'API
   }
 
-  Future<void> fetchDataFromAPI(code) async {
+  Future<void> fetchDataFromAPI() async {
     final url = Uri.parse(
-      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?where=code_departement%20like%20\'$code\''
+      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?where=code_departement like \'${selectedDepartement?.code}\''
     );
 
-    //final response = await http.get(url);
-    developer.log('url : $url');
+    final response = await http.get(url);
 
     //test de récupération des données
-    /*if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      final dynamic jsonData = json.decode(response.body);
       setState(() {
-        data = jsonData['records'];
+        print("jsondata: ${jsonData.runtimeType} \n");
+        data = [jsonData['results']];
       });
     } else {
       print('Erreur lors de la récupération des données : ${response.statusCode}');
-    }*/
+    }
   }
 
   @override
@@ -70,14 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
               setState(() {
                 selectedDepartement = label;
               });
-              fetchDataFromAPI(selectedDepartement?.code);
+              fetchDataFromAPI();
             },
           ),
           Text('vous avez sélectionné : ${selectedDepartement?.label??TextLabel.ain.label}'),
           SizedBox(
             height: 300,
             child: ListView.builder(
-              itemCount: data.length,
+              itemCount: data?.length,
               itemBuilder: (context, index) {
                 final commune = data[index]['record']['fields']['nom_commune'];
                 if (!displayedCommunes.contains(commune)) {

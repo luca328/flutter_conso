@@ -39,8 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response.statusCode == 200) {
       final dynamic jsonData = json.decode(response.body);
       setState(() {
-        print("jsondata: ${jsonData.runtimeType} \n");
-        data = [jsonData['results']];
+        print("jsondata: ${jsonData['results']} \n");
+        data = jsonData['results'];
       });
     } else {
       print('Erreur lors de la récupération des données : ${response.statusCode}');
@@ -78,14 +78,14 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             height: 300,
             child: ListView.builder(
-              itemCount: data?.length,
+              itemCount: data.length,
               itemBuilder: (context, index) {
-                final commune = data[index]['record']['fields']['nom_commune'];
+                final commune = data[index]['nom_commune'];
                 if (!displayedCommunes.contains(commune)) {
                   displayedCommunes.add(commune);
                   return ListTile(
                     title: Text(commune),
-                    subtitle: Text('Consommation : ${data[index]['record']['fields']['consommation_annuelle_moyenne_de_la_commune_mwh']} MWh'),
+                    subtitle: Text('Consommation : ${data[index]['consommation_annuelle_moyenne_de_la_commune_mwh']} MWh'),
                   );
                 } else {
                   return Container();

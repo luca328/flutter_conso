@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> fetchDataFromAPI() async {
     final url = Uri.parse(
-      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?select=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&where=code_departement like \'${selectedDepartement?.code}\'&group_by=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh'
+      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?select=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&where=code_departement like \'${selectedDepartement?.code}\'&group_by=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&limit=20000'
     );
 
     final response = await http.get(url);
@@ -60,40 +60,38 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        children: [
-          DropdownMenu<TextLabel>(
-            initialSelection: TextLabel.ain,
-            controller: departementController,
-            label: const Text('Département'),
-            dropdownMenuEntries: departements,
-            onSelected: (TextLabel? label){
-              setState(() {
-                selectedDepartement = label;
-              });
-              fetchDataFromAPI();
-            },
-          ),
-          Text('vous avez sélectionné : ${selectedDepartement?.label??TextLabel.ain.label}'),
-          SizedBox(
-            height: 600,
-            child: ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          children: [
+            DropdownMenu<TextLabel>(
+              initialSelection: TextLabel.ain,
+              controller: departementController,
+              label: const Text('Département'),
+              dropdownMenuEntries: departements,
+              onSelected: (TextLabel? label){
+                setState(() {
+                  selectedDepartement = label;
+                });
+                fetchDataFromAPI();
+              },
+            ),
+            Text('vous avez sélectionné : ${selectedDepartement?.label??TextLabel.ain.label}'),
+            Flexible(
+              child: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
                 final commune = data[index]['nom_commune'];
-                if (!displayedCommunes.contains(commune)) {
-                  displayedCommunes.add(commune);
                   return ListTile(
+                    key: UniqueKey(),
                     title: Text(commune),
                     subtitle: Text('Consommation : ${data[index]['consommation_annuelle_moyenne_de_la_commune_mwh']} MWh'),
                   );
-                } else {
-                  return Container();
-                }
-              },
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       )
     );
   }

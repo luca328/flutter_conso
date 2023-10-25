@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> fetchDataFromAPI() async {
     final url = Uri.parse(
-      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?where=code_departement like \'${selectedDepartement?.code}\''
+      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?select=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&where=code_departement like \'${selectedDepartement?.code}\'&group_by=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh'
     );
 
     final response = await http.get(url);
@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Text('vous avez sélectionné : ${selectedDepartement?.label??TextLabel.ain.label}'),
           SizedBox(
-            height: 300,
+            height: 600,
             child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {

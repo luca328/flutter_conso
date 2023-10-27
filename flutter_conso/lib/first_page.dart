@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_conso/helpers/departement.dart';
-import 'dart:developer' as developer;
-import 'package:dio/dio.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -39,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (response.statusCode == 200) {
       final dynamic jsonData = json.decode(response.body);
       setState(() {
-        print("jsondata: ${jsonData['results']} \n");
         data = jsonData['results'];
       });
     } else {

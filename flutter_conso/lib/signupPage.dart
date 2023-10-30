@@ -5,13 +5,15 @@ import 'package:flutter_conso/connexion/connexion.dart';
 class SignupPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController residenceController = TextEditingController();
+
+  SignupPage({super.key});
+  //final TextEditingController residenceController = TextEditingController();
 
   void createUser() async {
 
     final String email = emailController.text;
     final String password = passwordController.text;
-    final String residence = residenceController.text;
+    //final String residence = residenceController.text;
 
     final hashedPassword = await FlutterBcrypt.hashPw(password: password, salt: await FlutterBcrypt.salt());
 
@@ -25,7 +27,7 @@ class SignupPage extends StatelessWidget {
       final userDocument = {
         'email': email,
         'password': hashedPassword,
-        'residence': residence,
+        //'residence': residence,
       };
 
       await userCollection.save(userDocument);
@@ -86,7 +88,7 @@ class SignupPage extends StatelessWidget {
               ),
             ),
 
-            // Champ Lieu de Résidence
+            /*
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
@@ -96,8 +98,7 @@ class SignupPage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Bouton de Création de Compte
+            */
             ElevatedButton(
               onPressed: createUser,
               child: const Text('Créer un compte'),

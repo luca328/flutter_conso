@@ -22,39 +22,43 @@ class SignupPage extends StatelessWidget {
     try {
       await db.open();
 
-      final userCollection = db.collection('utilisateurs');
+      final userCollection = db.collection('users');
 
       final userDocument = {
+        'id': createObjectId(),
         'email': email,
         'password': hashedPassword,
         //'residence': residence,
       };
 
-      await userCollection.save(userDocument);
+      await userCollection.insertOne(userDocument);
 
       await db.close();
 
-      var context;
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Compte créé'),
-            content: const Text('Votre compte a été créé avec succès.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+
     } catch (e) {
       print('Erreur lors de la création du compte : $e');
     }
+  }
+
+  void dialog(BuildContext context, String message, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -100,7 +104,10 @@ class SignupPage extends StatelessWidget {
             ),
             */
             ElevatedButton(
-              onPressed: createUser,
+              onPressed: (){
+                createUser();
+                dialog(context, 'Votre compte a été créé avec succès.', 'Compte créé');
+              },
               child: const Text('Créer un compte'),
             ),
           ],

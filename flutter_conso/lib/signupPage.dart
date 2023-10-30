@@ -17,7 +17,7 @@ class SignupPage extends StatelessWidget {
 
     final hashedPassword = await FlutterBcrypt.hashPw(password: password, salt: await FlutterBcrypt.salt());
 
-    var db = openMongoDB();
+    var db = await openMongoDB();
 
     try {
       await db.open();

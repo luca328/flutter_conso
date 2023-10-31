@@ -15,14 +15,16 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool isAuthenticated = false;
 
-  void loginUser() async {
-    final db = await openMongoDB();
-    final authentication = await checkUser(db ,emailController.text, passwordController.text);
-    authentication ? setState((){isAuthenticated = true;}) : setState((){isAuthenticated = false;});
-  }
+Future<bool> loginUser() async {
+  final db = await openMongoDB();
+  return await checkUser(db, emailController.text, passwordController.text);
+}
 
   @override
   Widget build(BuildContext context) {
+    void navigate() {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Démo application flutter')),);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Connexion'),
@@ -54,11 +56,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
 
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                final isAuthenticated = await loginUser();
                 if(isAuthenticated) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Démo application flutter')),
-                  );
+                  navigate();
                 }
               },
               child: const Text('Connexion'),

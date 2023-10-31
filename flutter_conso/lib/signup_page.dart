@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 import 'package:flutter_conso/connexion/connexion.dart';
+import 'package:flutter_conso/first_page.dart';
 
 class SignupPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -25,7 +26,7 @@ class SignupPage extends StatelessWidget {
       final userCollection = db.collection('users');
 
       final userDocument = {
-        'id': createObjectId(),
+        '_id': createObjectId(),
         'email': email,
         'password': hashedPassword,
         //'residence': residence,
@@ -53,6 +54,7 @@ class SignupPage extends StatelessWidget {
               child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const MyHomePage(title: 'Démo application flutter')));
               },
             ),
           ],

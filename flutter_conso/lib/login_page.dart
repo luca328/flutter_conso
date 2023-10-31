@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_conso/first_page.dart';
 import 'package:flutter_conso/signup_page.dart';
+import 'package:flutter_conso/connexion/connexion.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isAuthenticated = false;
+
+  void loginUser() async {
+    final db = await openMongoDB();
+    final authentication = await checkUser(db ,emailController.text, passwordController.text);
+    authentication ? setState((){isAuthenticated = true;}) : setState((){isAuthenticated = false;});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,34 +32,38 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             // Champ Email
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: TextField(
-                decoration: InputDecoration(
+                controller: emailController,
+                decoration: const InputDecoration(
                   labelText: 'Email',
                 ),
               ),
             ),
 
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: TextField(
-                decoration: InputDecoration(
+                controller: passwordController,
+                decoration: const InputDecoration(
                   labelText: 'Mot de passe',
                 ),
                 obscureText: true,
               ),
             ),
 
-
             ElevatedButton(
               onPressed: () {
-                // Gérer la connexion ici
+                if(isAuthenticated) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Démo application flutter')),
+                  );
+                }
               },
-              child: Text('Connexion'),
+              child: const Text('Connexion'),
             ),
 
-            // Lien vers la création de compte
             TextButton(
               onPressed: () {
                 Navigator.push(

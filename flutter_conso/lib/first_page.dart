@@ -6,7 +6,6 @@ import 'package:flutter_conso/helpers/departement.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
   final String title;
 
   @override
@@ -14,7 +13,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<dynamic> data = <dynamic>[]; //Stocker les données de l'API
+  late List<dynamic> data = <dynamic>[];
   Set<String> displayedCommunes = <String>{};
   final TextEditingController departementController = TextEditingController();
   late TextLabel? selectedDepartement;
@@ -23,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     selectedDepartement = TextLabel.ain;
-    fetchDataFromAPI(); //Récupérez les données de l'API
+    fetchDataFromAPI();
   }
 
   Future<void> fetchDataFromAPI() async {

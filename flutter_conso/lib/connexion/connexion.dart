@@ -27,3 +27,16 @@ checkUser(dynamic db, String email, String password) async {
     print('\n \n Erreur lors de la connexion : $e');
   }
 }
+
+getResidence(dynamic db, String email) async {
+  final userCollection = db.collection('users');
+
+  try {
+    await db.open();
+    var residence = await userCollection.findOne(where.eq("email", email));
+    await db.close();
+    return residence['residence'];
+  } catch (e) {
+    print('\n \n Erreur lors de la connexion : $e');
+  }
+}

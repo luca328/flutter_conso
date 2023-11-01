@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_conso/first_page.dart';
 import 'package:flutter_conso/signup_page.dart';
 import 'package:flutter_conso/connexion/connexion.dart';
+import 'package:mongo_dart/mongo_dart.dart' as Mongo;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -13,17 +14,29 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  late String userEmail;
   bool isAuthenticated = false;
+  Mongo.Db? db;
 
-Future<bool> loginUser() async {
-  final db = await openMongoDB();
-  return await checkUser(db, emailController.text, passwordController.text);
-}
+  @override
+  void initState() {
+    super.initState();
+    _initDb();  
+  }
+
+  Future<void> _initDb() async {
+    db = await openMongoDB();
+  }
+
+  Future<bool> loginUser() async {
+    userEmail = emailController.text;
+    return await checkUser(db, emailController.text, passwordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
     void navigate() {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Démo application flutter')),);
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage(title: 'Démo application flutter', userEmail: userEmail, db: db,)),);
     }
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +82,7 @@ Future<bool> loginUser() async {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignupPage()),
+                  MaterialPageRoute(builder: (context) => const SignupPage()),
                 );
               },
               child: const Text('Créer un compte'),

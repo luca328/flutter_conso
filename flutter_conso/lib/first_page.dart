@@ -26,9 +26,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> fetchDataFromAPI() async {
-    final selectedDepartement = getResidence(widget.db, widget.userEmail);
+    final selectedDepartement = await getResidence(widget.db, widget.userEmail);
     final url = Uri.parse(
-      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?select=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&where=code_departement like \'${selectedDepartement?.code}\'&group_by=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&limit=20000'
+      'https://enedis.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-annuelle-residentielle-par-adresse/records?select=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&where=code_departement like \'$selectedDepartement\'&group_by=nom_commune,consommation_annuelle_moyenne_de_la_commune_mwh&limit=20000'
     );
 
     final response = await http.get(url);

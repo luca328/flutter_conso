@@ -30,7 +30,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> loginUser() async {
     userEmail = emailController.text;
-    return await checkUser(db, emailController.text, passwordController.text);
+    final result = await checkUser(db, emailController.text, passwordController.text);
+    await db?.close();
+    return result;
   }
 
   @override

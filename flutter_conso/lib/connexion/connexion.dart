@@ -21,10 +21,12 @@ checkUser(dynamic db, String email, String password) async {
     var hashedPassword = await userCollection.findOne(where.eq("email", email));
     if (hashedPassword != null) {
       return await FlutterBcrypt.verify(password: password, hash: hashedPassword['password']);
+    } else {
+      return false;
     }
-    await db.close();
   } catch (e) {
     print('\n \n Erreur lors de la connexion : $e');
+    return false;
   }
 }
 
